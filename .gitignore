@@ -1,3 +1,11 @@
+ main
 # Godot 4+ specific ignores
+=======
+/android/
+/Scenes/
+/docs/
+
+.import/
+ main
 .godot/
 /android/
