@@ -2,7 +2,6 @@ using Godot;
 using System.Collections.Generic;
 
 public partial class Player {
-	[Signal] public delegate void StatsChangedEventHandler();
 
 	private Dictionary<int, float> _stats = new() {
 		{ 0, 100f },
@@ -32,20 +31,20 @@ public partial class Player {
 		if (stat == 3) _speed = _stats[stat];
 		else if (stat == 0 && _stats[stat] <= 0f) TakeDamage();
 
-		EmitSignal(SignalName.StatsChanged);
+		EmitSignal(SignalName.stats_changed);
 	}
 
 	public async void start_temp_effect(int stat, float value, float duration) {
-		EmitSignal(SignalName.StatsChanged);
+		EmitSignal(SignalName.stats_changed);
 
 		await ToSignal(GetTree().CreateTimer(duration), SceneTreeTimer.SignalName.Timeout);
 
 		modify_stat(stat, -value);
-		EmitSignal(SignalName.StatsChanged);
+		EmitSignal(SignalName.stats_changed);
 	}
 
 	public async void start_tick_effect(int stat, float value, float interval, float duration) {
-		EmitSignal(SignalName.StatsChanged);
+		EmitSignal(SignalName.stats_changed);
 
 		int ticks = (int)(duration / interval);
 		for (int i = 0; i < ticks; i++) {

@@ -1,6 +1,8 @@
 using Godot;
 
 public partial class Player : CharacterBody3D {
+	[Signal] public delegate void stats_changedEventHandler();
+
 	[Export] private float _speed = 9.0f;
 	[Export] private float _gravity = 9.8f;
 	[Export] private float _jumpStrength = 4.0f;
