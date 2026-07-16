@@ -1,7 +1,7 @@
 using Godot;
 
 public partial class Player : CharacterBody3D {
-	[Export] private float _speed = 8.0f;
+	[Export] private float _speed = 9.0f;
 	[Export] private float _gravity = 9.8f;
 	[Export] private float _jumpStrength = 4.0f;
 	[Export] private float _mouseSensibility = 0.0005f;
@@ -44,9 +44,11 @@ public partial class Player : CharacterBody3D {
 				Mathf.DegToRad(89)
 			);
 
-			Vector3 cameraRotation = _gameCamera.Rotation;
-			cameraRotation.X = _pitch;
-			_gameCamera.Rotation = cameraRotation;
+			if (_gameCamera != null) {
+				Vector3 cameraRotation = _gameCamera.Rotation;
+				cameraRotation.X = _pitch;
+				_gameCamera.Rotation = cameraRotation;
+			}
 		}
 
 		if (@event is InputEventKey keyEvent && keyEvent.Pressed && keyEvent.Keycode == Key.Escape) Input.MouseMode = Input.MouseModeEnum.Visible;
@@ -65,7 +67,7 @@ public partial class Player : CharacterBody3D {
 	public override void _PhysicsProcess(double delta) {
 		if (!IsMultiplayerAuthority()) return;
 		
-		var direction = Vector3.Zero;
+		Vector3 direction = Vector3.Zero;
 
 		if (!_isLocked) {
 			if (Input.IsActionPressed("up")) direction -= Transform.Basis.Z;
@@ -76,7 +78,6 @@ public partial class Player : CharacterBody3D {
 
 		if (direction != Vector3.Zero) {
 			direction = direction.Normalized();
-
 			_targetVelocity.X = direction.X * _speed;
 			_targetVelocity.Z = direction.Z * _speed;
 		} 
@@ -98,15 +99,5 @@ public partial class Player : CharacterBody3D {
 			_targetVelocity.X = 0f;
 			_targetVelocity.Z = 0f;
 		}
-	}
-
-	public void TakeDamage() {
-		if (!IsMultiplayerAuthority()) return;
-		
-		SetInputLocked(true);
-		
-		if (_hudFace != null && _hudFaceDamageTexture != null) _hudFace.Texture = _hudFaceDamageTexture;
-		
-		GD.Print("Player took damage. Controls locked.");
 	}
 }
